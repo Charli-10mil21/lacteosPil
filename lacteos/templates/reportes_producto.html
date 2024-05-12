@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        {% for pro in productos %}
+        <div class="col-3">
+            <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+                <div class="card-body">
+                  <h5 class="card-title">{{pro.nombre}}</h5>
+                  <p class="card-text">Cantidad Unidades en Almacen:  </p>
+                  <h2 class="card-title text-center">{{pro.total_unidades}} </h2>
+                </div>
+                <div class="card-footer  "><a href="{% url 'reporte_detalle_producto' pro.id  %}" class="btn btn-light">Detalle</a></div>
+            </div>
+        </div>
+        {% endfor %}
+        
+        
+    </div>
+   
+
+</div>
+
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
+

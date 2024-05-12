@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-4">
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{error}}
+    </div>
+    {% endif %}
+    {% if message %}
+    <div class="alert alert-info" role="alert">
+        {{message}}
+    </div>
+    {% endif %}
+    <div class="card card-primary">
+        <div class="card-header bg-primary">
+          <h3 class="card-title text-white">Registro usuarios </h3>
+        </div>
+        
+        <form action="/users/" method="post">
+
+            {% csrf_token %}
+          <div class="card-body">
+                <div class="row">
+                    <div class="form-group col-5">
+                        <label for="id_name">Nombre:</label>
+                        <input type="text" name="first_name" maxlength="150" autocapitalize="none" autocomplete="first_name" autofocus="" required="" aria-describedby="id_name_helptext" id="id_name" class="form-control" >
+                    </div>
+                    <div class="form-group col-5">
+                        <label for="id_last_name">Apellido:</label>
+                        <input type="text" name="last_name" maxlength="150" autocapitalize="none" autocomplete="last_name" autofocus="" required="" aria-describedby="id_last_name_helptext" id="id_last_name" class="form-control" >
+                    </div>
+                    <div class="form-group col-5">
+                        <label for="id_username">Usuario:</label>
+                        <input type="text" name="username" maxlength="150" autocapitalize="none" autocomplete="username" autofocus="" required="" aria-describedby="id_username_helptext" id="id_username" class="form-control" >
+                    </div>
+                    <div class="form-group col-5">
+                        <label for="id_email">Email address</label>
+                        <input type="email" name="email" maxlength="150" autocapitalize="none" autocomplete="email" autofocus="" required="" aria-describedby="id_email_helptext" id="id_email" class="form-control" placeholder="ingrese Gmail" >
+                    </div>
+                    <div class="form-group col-5">
+                        <label for="id_password1">contraseña</label>
+                        <input type="password" name="password1" autocomplete="new-password" required="" aria-describedby="id_password1_helptext" id="id_password1" class="form-control"  placeholder="contraseña">
+                    </div>
+                    <div class="form-group col-5">
+                        <label for="id_password2">Confirmar Contraseña</label>
+                        <input type="password" name="password2" autocomplete="new-password" required="" aria-describedby="id_password2_helptext" id="id_password2" class="form-control"  placeholder="contraseña">
+                    </div>
+
+                    <div class="form-group col-5">
+                        <label for="group">Cargo:</label>
+                        <select class="form-select" aria-label="Default select example" id="group" name="group">
+                            <option selected>Escoja el Cargo</option>
+                            {% for grupo in grupos %}
+                            
+                            <option value="{{grupo.id}}">{{grupo.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                </div>
+          </div>
+
+          <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Registrar</button>
+          </div>
+        </form>
+      </div>
+
+    
+    
+
+    <table class="table my-5">
+        <thead class="table-primary">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Apellido</th>
+                <th scope="col">Usuario</th>
+                <th scope="col">Grupo</th> <!-- Nuevo -->
+                <th scope="col">Editar</th>
+                <th scope="col">Eliminar</th>
+              </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <th scope="row">{{user.id}}</th>
+                <td>{{user.first_name}}</td>
+                <td>{{user.last_name}}</td>
+                <td>{{user.username}}</td>
+                <td>
+                    {% if user.groups.all %}
+                        {% for group in user.groups.all %}
+                            {{ group.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        Sin grupo
+                    {% endif %}
+                </td>
+                <td><a href="{% url 'detalle_user' user.id  %}">
+                    <button type="button" class="btn btn-warning" style="--bs-btn-padding-x: .5rem">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                        </svg>
+                    </button>
+                    </a>            
+                </td>
+                <td> 
+                    <form action="{% url 'eliminar_user' user.id  %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                            </svg>
+                        </button> 
+                    </form>
+                    
+                </td>
+              </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    
+    
+</div>
+
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row text-center">
+        <h1>Reporte de Almacen</h1>
+    </div>
+    <p><b>Filtro Por fechas : </b></p>
+    <div class="row">
+        <class class="col-3">
+            <form method="POST" >
+                {% csrf_token %}
+                <div class="row">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Desde</span>
+                        <input type="date" name="fecha_inicio" class="form-control" id="fecha_inicio"  aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Hasta</span>
+                        <input type="date" name="fecha_fin" class="form-control" id="fecha_fin"  aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                <div class="row">
+                    <class class="col-6"><button type="submit" class="btn btn-primary">Buscar</button></class>
+                    <class class="col-6">
+                        <a href="/reporteAlmacen/">
+                            <button type="button" class="btn btn-secondary">Limpiar</button>
+                        </a>
+                    </class>
+                        
+                       
+                        
+                </div>
+            </form>
+        </class>
+        <class class="col-3">
+            <div class="card border-primary mb-3" style="max-width: 18rem;">
+            <div class="card-body text-primary">
+                <h5 class="card-title">Total Lotes Ingresados :</h5>
+                <p class="card-text text-center fs-2">{{ total_ingreso }} </p>
+            </div>
+            </div>
+        </class>
+        <class class="col-3">
+            <div class="card border-primary mb-3" style="max-width: 18rem;">
+            <div class="card-body text-primary">
+                <h5 class="card-title">Total Lotes Reingreso :</h5>
+                <p class="card-text text-center fs-2">{{ total_reingreso }} </p>
+            </div>
+            </div>
+        </class>
+        
+        
+
+        
+    </div>
+    <div class="row py-0 my-0">
+        <div class="col-6 text-center "> <h3>Ingreso de Lotes</h3> </div>
+        <div class="col-6 text-center"><h3>Reingreso de Productos</h3>  </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <table class="table my-2">
+                <thead class="table-primary">
+                    <tr>
+                        <th scope="col">N° de Lote</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Fecha Vencimiento</th>
+                        <th scope="col">Provedor</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Detalle</th>
+                      </tr>
+                </thead>
+                <tbody>
+                    {% for lote in lotes %}
+                    <tr>
+                        <th scope="row">{{lote.n_lote}}</th>
+                        <td>{{lote.fecha}}</td>
+                        <td>{{lote.fecha_vencimiento}}</td>
+                        {% for prov in provedores %}
+                            {% if prov.id == lote.id_proveedor_id %}
+                                <td>{{prov.nombre}}</td>
+                            {% endif %}
+                        {% endfor %}
+                        {% for user in users %}
+                            {% if user.id == lote.id_user_id %}
+                            <td>{{user.first_name}} {{user.last_name}}</td>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        
+                        <td><a href="{% url 'detalle_lote' lote.id  %}">
+                                <button type="button" class="btn btn-warning" style="--bs-btn-padding-x: .5rem">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                    </svg>
+                                </button>
+                            </a>
+                        
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+        </div>
+
+        <div class="col-6">
+            <table class="table my-2">
+                <thead class="table-primary">
+                    <tr>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Descripcion</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Detalle</th>
+                      </tr>
+                </thead>
+                <tbody>
+                    {% for rein in reingresos %}
+                    <tr>
+                        
+                        <td>{{rein.fecha}}</td>
+                        <td>{{rein.detalle}}</td>
+                        {% for user in users %}
+                            {% if user.id == rein.id_user_id %}
+                            <td>{{user.first_name}} {{user.last_name}}</td>
+                            {% endif %}
+                        {% endfor %}
+                        <td><a href="{% url 'detalle_reingreso' rein.id  %}">
+                                <button type="button" class="btn btn-warning" style="--bs-btn-padding-x: .5rem">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                    </svg>
+                                </button>
+                            </a>
+                        
+                        </td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+        </div>
+        
+    </div>
+   
+
+</div>
+
+
+
+
+
+{% endblock %}

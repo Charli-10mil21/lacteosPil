@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+    {{error}}
+    </div>
+    {% endif %}
+    {% if message %}
+    <div class="alert alert-info" role="alert">
+    {{message}}
+    </div>
+    {% endif %}
+
+
+<div class="container text-center py-4">
+    <div class="row">
+      <div class="col">
+        <div class="card card-primary">
+            <div class="card-header bg-primary">
+              <h3 class="card-title text-white">Registrar Nuevo Lote </h3>
+            </div>
+            
+            <form action="/almacen/" method="post">
+    
+                {% csrf_token %}
+              <div class="card-body">
+                    <div class="row">
+                        <div class="form-group col-5">
+                            <label for="n_lote">N° lote:</label>
+                            <input type="text" name="n_lote" maxlength="150" autocapitalize="none" autocomplete="n_lote" autofocus="" required="" aria-describedby="n_lote_helptext" id="n_lote" class="form-control" >
+                        </div>
+                        <div class="form-group col-5">
+                            <label for="fecha">Fecha</label>
+                            <input type="date" name="fecha" maxlength="150" autocapitalize="none" autocomplete="fecha" autofocus="" required="" aria-describedby="fecha_helptext" id="fecha" class="form-control" >
+                        </div>
+                        <div class="form-group col-5">
+                            <label for="fecha_vencimiento">Fecha Vencimiento</label>
+                            <input type="date" name="fecha_vencimiento" maxlength="150" autocapitalize="none" autocomplete="fecha_vencimiento" autofocus="" required="" aria-describedby="fecha_vencimiento_helptext" id="fecha_vencimiento" class="form-control" >
+                        </div>
+                        <div class="form-group col-5">
+                            <label for="id_user">Usuario: {{user.first_name}} {{user.last_name}}</label>
+                            <input value="{{user.id}}" type="number" step="any" name="id_user" maxlength="10" autocapitalize="none" autocomplete="id_user" autofocus="" required="" aria-describedby="id_user_helptext" id="id_user" class="form-control" >
+                        </div>
+                        
+                        <div class="form-group col-5">
+                            <label for="id_proveedor">Provedor:</label>
+                            <select class="form-select" aria-label="Default select example" id="id_proveedor" name="id_proveedor">
+                                <option selected>Escoja el proveedor</option>
+                                {% for provedor in provedores %}
+                                
+                                <option value="{{provedor.id}}">{{provedor.nombre}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+    
+                    </div>
+              </div>
+    
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Registrar</button>
+                <a href="/produccion/">
+                    <button type="button" class="btn btn-danger">Salir</button>
+                </a>
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+        <table class="table my-5">
+            <thead class="table-primary">
+                <tr>
+                    <th scope="col">N° de Lote</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Fecha Vencimiento</th>
+                    <th scope="col">Provedor</th>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Editar</th>
+                    <th scope="col">Eliminar</th>
+
+
+
+                    
+                  </tr>
+            </thead>
+            <tbody>
+                {% for lote in lotes %}
+                <tr>
+
+                    <th scope="row">{{lote.n_lote}}</th>
+                        <td>{{lote.fecha}}</td>
+                        <td>{{lote.fecha_vencimiento}}</td>
+                        {% for prov in provedores %}
+                            {% if prov.id == lote.id_proveedor_id %}
+                                <td>{{prov.nombre}}</td>
+                            {% endif %}
+                        {% endfor %}
+                        {% for user in users %}
+                            {% if user.id == lote.id_user_id %}
+                            <td>{{user.first_name}} {{user.last_name}}</td>
+                            {% endif %}
+                        {% endfor %}
+                    <td><a href="{% url 'detalle_lote' lote.id  %}">
+                            <button type="button" class="btn btn-warning" style="--bs-btn-padding-x: .5rem">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                </svg>
+                            </button>
+                        </a>
+                    
+                    </td>
+                    <td> 
+                        <form action="{% url 'eliminar_lote' lote.id  %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                                </svg>
+                            </button> 
+                        </form>
+                        
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}

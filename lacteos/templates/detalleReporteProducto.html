@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col">
+            <div class="card border-primary mb-3" style="max-width: 18rem;">
+            <div class="card-body text-primary">
+                <h5 class="card-title">Total Unidades Ingresada a Almacen :</h5>
+                <p class="card-text text-center fs-2">{{ total_ingreso }} </p>
+            </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card card-primary">
+                <div class="card-header bg-primary text-center">
+                  <h3 class="card-title text-white">{{product.nombre}} </h3>
+                </div>
+                <div class="card-body">
+                    <p><b>Item: </b>
+                        {% for item in items %}
+                            {% if item.id == product.id_item_id %}
+                            {{item.nombre}}
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                    <p><b>Peso : </b>  {{product.peso}} {{product.u_medida}} </p>
+                    <p> <b>Precio Unidad :</b> {{product.precio_unidad}}  </p>
+                    <p><b>Cantidad Disponible en Almacen:</b> {{product.total_unidades}} Unidades </p>
+                </div>
+                <div class="card-footer">
+                <a href="/reportes_productos/">
+                    <button type="button" class="btn btn-danger">Salir</button>
+                </a>
+                </div>
+                
+            </div>
+        </div>
+        <div class="col ">
+            <div class="card border-primary mb-3" style="max-width: 18rem;">
+            <div class="card-body text-primary">
+                <h5 class="card-title">Total Unidades Vendidas :</h5>
+                <p class="card-text text-center fs-2">{{ total_ventas }} </p>
+            </div>
+            </div>
+        </div>
+        
+
+    </div>
+    <p><b>Filtro Por fechas : </b></p>
+    <div class="row">
+        <form method="POST" action="{% url 'reporte_detalle_producto' product.id %}">
+            {% csrf_token %}
+            <div class="col-3">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Desde</span>
+                    <input type="date" name="fecha_inicio" class="form-control" id="fecha_inicio"  aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Hasta</span>
+                    <input type="date" name="fecha_fin" class="form-control" id="fecha_fin"  aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-1">
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+        </form>
+        
+
+        
+    </div>
+    <div class="row py-0 my-0">
+        <div class="col-6 text-center "> <h3>Detalle Ingreso Almacen</h3> </div>
+        <div class="col-6 text-center"><h3>Detalle de Ventas</h3>  </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <table class="table my-2">
+                <thead class="table-primary">
+                    <tr>
+                        <th scope="col">N° Lote</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">cantidad</th>
+                      </tr>
+                </thead>
+                <tbody>
+                    {% for det in det_lotes %}
+                    <tr>
+                        {% for lot in lote %}
+                            {% if lot.id == det.id_lote_id %}
+                            <th scope="row">{{lot.n_lote}}</th>
+                            <td>{{lot.fecha}}</td>
+                            {% endif %}
+                        {% endfor %}
+                        <td>{{det.cantidad}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+        </div>
+
+        <div class="col-6">
+            <table class="table my-2">
+                <thead class="table-primary">
+                    <tr>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">cantidad</th>
+                      </tr>
+                </thead>
+                <tbody>
+                    {% for det in det_ventas %}
+                    <tr>
+                        {% for vent in venta %}
+                            {% if vent.id == det.id_venta_id %}
+                            <td>{{vent.fecha}}</td>
+                            {% endif %}
+                        {% endfor %}
+                        <td>{{det.cantidad}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+        </div>
+        
+    </div>
+   
+</div>
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+    {{error}}
+    </div>
+    {% endif %}
+    {% if message %}
+    <div class="alert alert-info" role="alert">
+    {{message}}
+    </div>
+    {% endif %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Nueva Venta
+            </button>
+            
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Nueva Venta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/registro_venta/" method="post">
+    
+                            {% csrf_token %}
+                          <div class="card-body">
+                                <div class="row">
+                                    <div class="form-group col-5">
+                                        <label for="id_user">Usuario: {{user.first_name}} {{user.last_name}}</label>
+                                        <input type="text" name="id_user" maxlength="150" autocapitalize="none" autocomplete="id_user" autofocus="" required="" aria-describedby="id_user_helptext" id="id_user" class="form-control" value="{{user.id}}" >
+                                    </div>
+                                    <div class="form-group col-5">
+                                        <label for="nombre_cliente">Cliente:</label>
+                                        <input type="text" name="nombre_cliente" maxlength="150" autocapitalize="none" autocomplete="nombre_cliente" autofocus="" required="" aria-describedby="nombre_cliente_helptext" id="nombre_cliente" class="form-control" >
+                                    </div>
+                                    <div class="form-group col-5">
+                                        <label for="nit">NIT/CI:</label>
+                                        <input type="number" step="any" name="nit" maxlength="10" autocapitalize="none" autocomplete="nit" autofocus="" required="" aria-describedby="nit_helptext" id="nit" class="form-control" >
+                                    </div>
+                                    <div class="form-group col-5">
+                                        <label for="fecha">Fecha:</label>
+                                        <input type="date" step="any" name="fecha" maxlength="10" autocapitalize="none" autocomplete="fecha" autofocus="" required="" aria-describedby="fecha_helptext" id="fecha" class="form-control" >
+                                    </div>
+                                    <div class="form-group col-5">
+                                        <label for="tipo_venta">Tipo Venta:</label>
+                                        <select class="form-select" aria-label="Default select example" id="tipo_venta" name="tipo_venta">
+                                            <option selected>Escoja el tipo de venta</option>
+                                            <option value="A Credito">A Credito</option>
+                                            <option value="Por mayor">Por mayor</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-5">
+                                        <label for="id_estado">Estado:</label>
+                                        <select class="form-select" aria-label="Default select example" id="id_estado" name="id_estado">
+                                            <option selected>Estado de la venta</option>
+                                            {% for estado in estados %}
+                                            <option value="{{estado.id}}">{{estado.nombre}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    
+                
+                                </div>
+                          </div>
+                
+                          <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Registrar</button>
+                            
+                          </div>
+                        </form>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <a href="/merma/"><button type="button" class="btn btn-secondary"> Registro mermas</button> </a>
+        </div>
+
+        <div class="col"></div>
+        <div class="col"></div>
+    </div>
+
+    <div class="row">
+        <table class="table my-5">
+            <thead class="table-primary">
+                <tr>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">nombre Cliente</th>
+                    <th scope="col">NIT/CI</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Tipo Venta</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Editar</th>
+                    <th scope="col">Eliminar</th>
+
+
+
+                    
+                  </tr>
+            </thead>
+            <tbody>
+                {% for venta in ventas %}
+                <tr>
+                    <th scope="row">{{venta.id_user_id}}</th>
+                    <td>{{venta.nombre_cliente}}</td>
+                    <td>{{venta.nit}}</td>
+                    <td>{{venta.fecha}}</td>
+                    <td>{{venta.tipo_venta}}</td>
+                    {% for estado in estados %}
+                        {% if estado.id == venta.id_estado_id %}
+                        <td>{{estado.nombre}} </td>
+                        {% endif %}
+                    {% endfor %}
+                    <td><a href="{% url 'detalle_venta' venta.id  %}">
+                            <button type="button" class="btn btn-warning" style="--bs-btn-padding-x: .5rem">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                </svg>
+                            </button>
+                        </a>
+                    
+                    </td>
+                    <td> 
+                        <form action="{% url 'eliminar_venta' venta.id  %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                                </svg>
+                            </button> 
+                        </form>
+                        
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+   
+
+</div>
+
+{% endblock %}

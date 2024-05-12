@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+    
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+    {{error}}
+    </div>
+    {% endif %}
+    {% if message %}
+    <div class="alert alert-info" role="alert">
+    {{message}}
+    </div>
+    {% endif %}
+
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col">
+            <div class="card card-primary">
+                <div class="card-header bg-primary">
+                  <h3 class="card-title text-white">Editar lote </h3>
+                </div>
+                <form method="POST">
+        
+                    {% csrf_token %}
+    
+                  <div class="card-body">
+                        <div class="row">
+                            <div class="form-group col-5">
+                                <label for="n_lote">N° lote:</label>
+                                <input type="text" name="n_lote" maxlength="150" autocapitalize="none" autocomplete="n_lote" autofocus="" required="" aria-describedby="n_lote_helptext" id="n_lote" class="form-control" value="{{lote.n_lote}}" >
+                            </div>
+                            <div class="form-group col-5">
+                                <label for="fecha">Fecha</label>
+                                <input type="text" name="fecha" maxlength="150" autocapitalize="none" autocomplete="fecha" autofocus="" required="" aria-describedby="fecha_helptext" id="fecha" class="form-control" value="{{lote.fecha}}">
+                            </div>
+                            <div class="form-group col-5">
+                                <label for="fecha_vencimiento">Fecha Vencimiento</label>
+                                <input type="text" name="fecha_vencimiento" maxlength="150" autocapitalize="none" autocomplete="fecha_vencimiento" autofocus="" required="" aria-describedby="fecha_vencimiento_helptext" id="fecha_vencimiento" class="form-control" value="{{lote.fecha_vencimiento}}">
+                            </div>
+                            <div class="form-group col-5">
+                                <label for="id_user">id_user:</label>
+                                <input type="text" step="any" name="id_user" maxlength="10" autocapitalize="none" autocomplete="id_user" autofocus="" required="" aria-describedby="id_user_helptext" id="id_user" class="form-control" value="{{lote.id_user_id}}" readonly>
+                            </div>
+                            <div class="form-group col-5">
+                                <label for="id_proveedor">Provedor:</label>
+                                <select class="form-select" aria-label="Default select example" id="id_proveedor" name="id_proveedor" >
+                                    <option selected value="{{lote.id_proveedor_id}}">{{lote.id_proveedor_id}}</option>
+                                    {% for provedor in provedores %}
+                                    
+                                    <option value="{{provedor.id}}">{{provedor.nombre}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+        
+                        </div>
+                  </div>
+        
+                  <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                    <a href="/almacen/">
+                        <button type="button" class="btn btn-danger">Salir</button>
+                    </a>
+                    <a href="{% url 'pdfAlmacen' lote.id %}">
+                        <button type="button" class="btn btn-danger">Generar PDF</button>
+                    </a>
+                    
+                  </div>
+                </form>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card card-primary">
+                <div class="card-header bg-primary">
+                  <h3 class="card-title text-white">Registrar Detalle </h3>
+                </div>
+                <form method="POST" action="{% url 'registre_detalle_lote' %}">
+        
+                    {% csrf_token %}
+    
+                  <div class="card-body">
+                        <div class="row">
+                            <div class="form-group col-5">
+                                <label for="id_lote">N° lote:</label>
+                                <input type="text" name="id_lote" maxlength="150" autocapitalize="none" autocomplete="id_lote" autofocus="" required="" aria-describedby="id_lote_helptext" id="id_lote" class="form-control" value="{{lote.id}}" readonly>
+                            </div>
+                            
+                            <div class="form-group col-5">
+                                <label for="id_producto">Producto:</label>
+                                <select class="form-select" aria-label="Default select example" id="id_producto" name="id_producto" >
+                                    {% for producto in productos %}
+                                    
+                                    <option value="{{producto.id}}">{{producto.nombre}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group col-5">
+                                <label for="cantidad">cantidad</label>
+                                <input type="text" name="cantidad" maxlength="150" autocapitalize="none" autocomplete="cantidad" autofocus="" required="" aria-describedby="cantidad_helptext" id="cantidad" class="form-control">
+                            </div>
+                            
+        
+                        </div>
+                  </div>
+        
+                  <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Registrar</button>
+                    
+                  </div>
+                </form>
+            </div>
+        </div>
+        
+    </div>
+    <div class="row">
+        <h2> Detalle de Lote</h2>
+        <table class="table my-5">
+            <thead class="table-primary">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nº lote </th>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Eliminar</th>
+                    
+                  </tr>
+            </thead>
+            <tbody>
+                {% for det in detLotes %}
+                <tr>
+                    <th scope="row">{{det.id}}</th>
+
+                    {% for lote in lotes %}
+                        {%  if lote.id == det.id_lote_id %}
+                        <td>{{lote.n_lote}}</td>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% for pro in productos %}
+                        {% if pro.id == det.id_producto_id%}
+                        <td>{{pro.nombre}}</td>
+                        {% endif %}
+                    {% endfor %}
+                    <td>{{det.cantidad}}</td>
+                    <td> 
+                        <form action="{% url 'eliminar_detalle_lote' det.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                                </svg>
+                            </button> 
+                        </form>
+                        
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+   
+   
+</div>
+
+
+
+
+
+{% endblock %}

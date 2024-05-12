@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte Ingreso Almacen</title>
+    <style>
+       body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .img-invoce{
+            width: 50px;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        #invoice thead tr th {
+        text-align: left;
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+        padding-top: 4px;
+    }
+
+    #invoice thead tr {
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    #invoice tbody tr {
+        padding: 0;
+    }
+
+    .text-center{
+        text-align: center;
+    }
+    </style>
+</head>
+<body>
+<img src="{{ icon2 }}" alt="" class="img-invoce">
+<div class="header">
+<h3>Gobierno Autonomo Departamental de Potosi</h3>
+<h5>Secretaria Deptal Desarrollo Agropecuario y Seguridad Alimentaria</h5>
+<h5>Servicio Departamental Agropecuario</h5>
+</div>
+<h4>Ingreso A Almacenes</h4>
+<p><b>N. Lote :</b>  {{lote.n_lote}}</p>
+<p><b>Fecha Ingreso:</b> {{lote.fecha}}</p>
+<p><b>Fecha Expiración:</b> {{lote.fecha_vencimiento}}</p>
+
+<table id="invoice">
+    <thead>
+        <tr >
+            <th style="width: 15%;">Item Producto</th>
+            <th style="width: 60%;">Descripcion Producto</th>
+            <th style="width: 10%;">Unidad</th>
+            <th style="width: 15%;">Cantidad</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for det in detLotes %}
+        <tr {% if forloop.first %}style="padding-top: 3px;" {% endif %}>
+            {% for pro in productos %}
+                {% if pro.id == det.id_producto_id %}
+                <td class="text-center">{{pro.id_item_id}}</td>
+                <td>{{pro.nombre}}</td>
+                <td class="text-center">{{pro.u_medida}}</td>
+                {% endif %}
+            {% endfor %}
+            <td class="text-center">{{det.cantidad}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+       
+<table style="margin-top: 60px;">
+    <thead>
+        <tr>
+            <th>Proveedor</th>
+            <th>Firma</th>
+            <th>Responsable Almacen</th>
+            <th>Firma</th>
+        </tr>
+    </thead>
+    <tbody >
+        <tr>
+            {% for prov in provedores %}
+                {% if prov.id == lote.id_proveedor_id %}
+                <td>{{prov.nombre}} {{prov.profesion}} </td>
+                {% endif %}
+            {% endfor %}
+            <td></td>
+            <td>{{user.first_name}} {{user.last_name}}</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+        
+    
+</body>
+</html>

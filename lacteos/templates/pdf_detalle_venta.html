@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .img-invoce{
+            width: 50px;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        #invoice thead tr th {
+        text-align: left;
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+        padding-top: 4px;
+    }
+
+    #invoice thead tr {
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    #invoice tbody tr {
+        padding: 0;
+    }
+
+    .text-center{
+        text-align: center;
+    }
+    </style>
+    <title>Recibo de Venta</title>
+</head>
+<body>
+<img src="{{ icon2 }}" class="img-invoce" alt="">
+        
+<div class="header">
+<h3>Gobierno Autonomo Departamental de Potosi</h3>
+<h5>Secretaria Deptal Desarrollo Agropecuario y Seguridad Alimentaria</h5>
+<h5>Servicio Departamental Agropecuario</h5>
+</div>
+<h4>Nota de Venta</h4>
+<p><b>Cliente:</b> {{venta.nombre_cliente}}</p>
+<p><b>Nit:</b> {{venta.nit}}</p>
+<p><b>Fecha:</b> {{venta.fecha}}</p>
+
+
+<table id="invoice">
+    <thead>
+        <tr>
+            <th style="width: 60%;" class="text-center">Producto</th>
+            <th style="width: 10%;" class="text-center">Precio Unitario</th>
+            <th style="width: 15%;" class="text-center">Cantidad</th>
+            <th style="width: 15%;" class="text-center">Total Bs</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for det in detventa %}
+        <tr {% if forloop.first %}style="padding-top: 3px;" {% endif %}>
+            {% for pro in productos %}
+                {% if pro.id == det.id_producto_id%}
+                <td>{{pro.nombre}}</td>
+                <td class="text-center">{{pro.precio_unidad}}</td>
+                {% endif %}
+            {% endfor %}
+            <td class="text-center">{{det.cantidad}}</td>
+            <td class="text-center">{{det.total}}</td>
+        </tr>
+        {% endfor %}
+        <tr style="border-top: 1px solid black; padding-top: 4px;">
+            <td colspan="4"><b>TOTAL A PAGAR : </b></td>
+            <td style="text-align: right"><b>{{venta.total_venta}}</b></td>
+        </tr>
+    </tbody>
+</table>
+        
+<table style="margin-top: 60px;">
+    <thead>
+        <tr>
+            <th>Entregado por:</th>
+            <th>Firma</th>
+            <th>Recibido por el Cliente:</th>
+            <th>Firma</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{user.first_name}} {{user.last_name}}</td>
+            <td></td>
+            <td>{{venta.nombre_cliente}}</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+        
+    
+    
+</body>
+</html>
