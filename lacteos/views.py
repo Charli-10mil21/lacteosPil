@@ -78,7 +78,7 @@ def administracion(request):
 
 #crud User
 
-@login_required
+
 def registerUser(request):
     if request.method == 'GET':
         user = request.user
