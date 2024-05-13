@@ -26,12 +26,12 @@ def es_administrador(user):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home/',(views.administracion), name='home'),
-    path('users/',(views.registerUser), name='users'),
-    path('users/<int:id_user>/',(views.editUser), name='detalle_user'),
-    path('users/<int:id_user>/eliminar',(views.deleteUser), name='eliminar_user'),
+    path('home/',user_passes_test(es_administrador)(views.administracion), name='home'),
+    path('users/',user_passes_test(es_administrador)(views.registerUser), name='users'),
+    path('users/<int:id_user>/',user_passes_test(es_administrador)(views.editUser), name='detalle_user'),
+    path('users/<int:id_user>/eliminar',user_passes_test(es_administrador)(views.deleteUser), name='eliminar_user'),
     path('cerrarsesion/',views.cerrarSesion),
-    path('',views.signin, name='signin'),
+    path('signin/',views.signin, name='signin'),
     path('produccion/',views.produccion, name='produccion'),
     path('productos/',views.registerProducto, name='productos' ),
     path('product/<int:id_producto>/',views.editProducto, name='detalle_producto'),
